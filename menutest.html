@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu Prototype</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+    <style>
+        /* Existing CSS */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a0a0a, #2c2c2c);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 6em;
+            letter-spacing: 12px;
+            margin-bottom: 60px;
+            position: relative;
+            color: #ffffff;
+            background: linear-gradient(135deg, #003366, #006699); /* Darker blue gradient */
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+            transform: rotateY(-10deg);
+            animation: shineEffect 2s infinite;
+        }
+
+        @keyframes shineEffect {
+            0% {
+                background-position: -200%;
+            }
+
+            100% {
+                background-position: 200%;
+            }
+        }
+
+        .menu-item {
+            font-size: 2.5em;
+            margin: 20px 0;
+            opacity: 0;
+            background: none;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+            animation: shineEffect 2s infinite;
+        }
+
+        .menu-item.show {
+            opacity: 1;
+        }
+
+        .menu-item:hover {
+            color: #fff;
+            text-shadow: 1px 1px 12px rgba(0, 0, 0, 0.9);
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .options-menu {
+            display: none;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInOptions 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeInOptions {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .flash {
+            animation: flashEffect 0.8s ease-in-out forwards;
+        }
+
+        @keyframes flashEffect {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .option-item {
+            font-size: 2em;
+            margin: 20px 0;
+            background: none;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .option-item input[type="range"] {
+            height: 5px;
+            background: #555;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .option-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            background: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .option-item input[type="range"]::-moz-range-thumb {
+            background: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="main-menu">
+        <div class="title" id="main-title">Blake's Aim Trainer V2</div>
+        <div class="menu-item" id="start-game">Start Game</div>
+        <div class="menu-item" id="options">Options</div>
+        <div class="menu-item" id="exit">Exit</div>
+    </div>
+    <div class="options-menu" id="options-menu">
+        <h2>Audio Settings</h2>
+        <div class="option-item">
+            <label for="background-music-volume">Background Music Volume:</label>
+            <input type="range" id="background-music-volume" min="0" max="1" step="0.1" value="1">
+        </div>
+        <div class="option-item">
+            <label for="sound-effects-volume">Sound Effects Volume:</label>
+            <input type="range" id="sound-effects-volume" min="0" max="1" step="0.1" value="1">
+        </div>
+        <div class="option-item">
+            <button id="back">Back</button>
+        </div>
+    </div>
+
+    <!-- Add audio element for the sound effect -->
+    <audio id="sound-effect" src="./Final Project/Audio/hit_sound.mp3" preload="auto"></audio>
+    <audio id="background-music" src="./Final Project/Audio/background-music.mp3" preload="auto" loop></audio>
+
+    <script>
+        let typedCharacters = '';
+
+        window.onload = function () {
+            // Show the menu items with a delay for the title to appear first
+            setTimeout(() => {
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => item.classList.add('show'));
+            }, 1000);
+
+            // Set initial volume levels
+            document.getElementById('background-music').volume = document.getElementById('background-music-volume').value;
+            document.getElementById('sound-effect').volume = document.getElementById('sound-effects-volume').value;
+        };
+
+        // Function to handle the title and text change to "Chris Trainer V2"
+        function checkForSecretWord() {
+            if (typedCharacters.includes('chris')) {
+                document.title = "Chris Trainer V2";
+                document.getElementById('main-title').textContent = "Chris Trainer V2";
+
+                // Update menu items text if necessary
+                document.getElementById('start-game').textContent = "Start Chris's Game";
+                document.getElementById('options').textContent = "Chris's Options";
+            }
+        }
+
+        // Listen for keyboard input to track the typed word
+        window.addEventListener('keydown', function (event) {
+            typedCharacters += event.key.toLowerCase();
+
+            // Keep only the last 5 characters to match "chris"
+            if (typedCharacters.length > 5) {
+                typedCharacters = typedCharacters.slice(-5);
+            }
+
+            checkForSecretWord();
+        });
+
+        document.getElementById('background-music-volume').addEventListener('input', function () {
+            document.getElementById('background-music').volume = this.value;
+        });
+
+        document.getElementById('sound-effects-volume').addEventListener('input', function () {
+            document.getElementById('sound-effect').volume = this.value;
+        });
+
+        document.getElementById('start-game').addEventListener('click', function () {
+            document.getElementById('sound-effect').play();
+
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.add('fadeOut'));
+
+            setTimeout(() => {
+                const title = document.querySelector('.title');
+                title.classList.add('flash');
+
+                setTimeout(() => {
+                    title.classList.add('fadeOut');
+
+                    setTimeout(() => {
+                        window.location.href = './Final Project/mainGame.html';
+                    }, 800);
+                }, 800);
+            }, 800);
+        });
+
+        document.getElementById('options').addEventListener('click', function () {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.add('fadeOut'));
+
+            setTimeout(() => {
+                document.getElementById('main-menu').style.display = 'none';
+                document.getElementById('options-menu').style.display = 'block';
+                document.getElementById('options-menu').classList.add('fadeInOptions');
+            }, 800);
+        });
+
+        document.getElementById('back').addEventListener('click', function () {
+            document.getElementById('options-menu').classList.add('fadeOut');
+
+            setTimeout(() => {
+                document.getElementById('options-menu').style.display = 'none';
+                document.getElementById('main-menu').style.display = 'block';
+
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => item.classList.remove('fadeOut'));
+                menuItems.forEach(item => item.classList.add('show'));
+            }, 800);
+        });
+    </script>
+</body>
+
+</html>
